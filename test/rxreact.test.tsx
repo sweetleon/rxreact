@@ -106,6 +106,50 @@ describe("withViewModel", () => {
           expect(rendered.find("#other").text()).toContain("moldy cheese");
         });
       });
+
+      describe("when `inputs` are empty", () => {
+        it("still renders", () => {
+          interface OutputOnlyComponentProps {
+            inputNumber: (_: number) => void;
+          }
+          let Component: React.SFC<OutputOnlyComponentProps> = () =>
+            <div>Just checking</div>;
+          let viewModel = {
+            inputs: {},
+            outputs: {inputNumber: numberSubject}
+          };
+          let ComponentWithViewModel = withViewModel(viewModel, Component);
+          const subject = mount(<ComponentWithViewModel/>);
+
+          expect(subject.text()).toEqual("Just checking");
+        });
+      });
+
+      describe("when `outputs` are empty", () => {
+        it("still renders", () => {
+          interface InputOnlyComponentProps {
+            derived1: string;
+            derived2: string;
+          }
+
+          let Component: React.SFC<InputOnlyComponentProps> = ({
+                                                                 derived1,
+                                                                 derived2,
+                                                               }) =>
+            <div>We have {derived1} {derived2}</div>;
+          let viewModel = {
+            inputs: {
+              derived1: derived1Signal,
+              derived2: derived2Signal,
+            },
+            outputs: {}
+          };
+          let ComponentWithViewModel = withViewModel(viewModel, Component);
+          const subject = mount(<ComponentWithViewModel/>);
+
+          expect(subject.text()).toEqual("We have 2 bananas applesauce");
+        });
+      });
     });
 
     describe("with a view model that has no initial value for state", () => {
