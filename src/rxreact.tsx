@@ -30,7 +30,7 @@ function withViewModelFactory<S, A, P extends S & ActionMap<A>>(
       constructor(props: Difference<P, S & ActionMap<A>>) {
         super(props);
         let viewModel = viewModelFactory(this.propsObservable);
-        this.observableState = combineObservables(viewModel.inputs);
+        this.observableState = Object.keys(viewModel.inputs).length ? combineObservables(viewModel.inputs) : Observable.of({} as S);
         this.actions = subjectMapToActionMap(viewModel.outputs);
       }
 
